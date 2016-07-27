@@ -26,7 +26,7 @@ def getToken():
 
 @app.route('/orchestrate/api/v1.0/getState', methods=['GET'])
 def getState():
-    return '\n Current state is: ' + appState.name + '\n\n'
+    return 'Current state is: ' + appState.name + '\n'
 
 @app.route('/orchestrate/api/v1.0/push', methods=['POST'])
 def run():
