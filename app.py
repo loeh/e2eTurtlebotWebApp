@@ -23,18 +23,20 @@ def run():
         goAway()
         appState = State.away
         print appState.name
-        return 'went away'
+        return '\n on the way to the horizon'
     elif appState == State.away:
         goHome()
         appState = State.home
-        return 'got home'
+        return '\n on the way home'
 
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
     # kill running nodes
     # start docking nodes 
-    invoceCommandOnRobot('rosnode kill -a')
+    #invoceCommandOnRobot('/home/turtlebot/launch_nodekill.sh')
+    #time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_docking.sh')
+    return 'docking now'
 
 @app.errorhandler(404)
 def not_found(error):
@@ -63,7 +65,7 @@ def goAway():
     # publish to a move_base topic
 
 def goHome():
-    startNodeOnRobot('/home/turtlebot/launch_moveto_home.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_moveto_home.sh')
     
 
 def invoceCommandOnRobot(command):
