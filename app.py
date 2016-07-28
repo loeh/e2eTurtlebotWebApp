@@ -44,7 +44,7 @@ def not_found(error):
 
 
 def getToken():
-    tokenUrl = 'http://ab44513583e1711e6b0ef02e4cf15b02-1319127330.eu-central-1.elb.amazonaws.com:8001/login'
+    tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
 
     headers = {'Accept': 'application/json'}
 
@@ -69,7 +69,7 @@ def goHome():
     
 
 def invoceCommandOnRobot(command):
-    url = 'http://ab44513583e1711e6b0ef02e4cf15b02-1319127330.eu-central-1.elb.amazonaws.com:8001'
+    url = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001'
 
     headers = {'Accept': 'application/json',
                'X-Auth-Token': '' + getToken() + ''

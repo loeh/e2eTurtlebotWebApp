@@ -23,11 +23,11 @@ def run():
         goAway()
         appState = State.away
         print appState.name
-        return 'went away'
+        return '\n on the way to the horizon'
     elif appState == State.away:
         goHome()
         appState = State.home
-        return 'got home'
+        return '\n on the way home'
 
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
@@ -44,7 +44,7 @@ def not_found(error):
 
 
 def getToken():
-    tokenUrl = 'http://ab44513583e1711e6b0ef02e4cf15b02-1319127330.eu-central-1.elb.amazonaws.com:8001/login'
+    tokenUrl = 'http://a8494c153542511e69b640206bb85836-116705424.eu-central-1.elb.amazonaws.com:8001/login'
 
     headers = {'Accept': 'application/json'}
 
@@ -69,7 +69,7 @@ def goHome():
     
 
 def invoceCommandOnRobot(command):
-    url = 'http://ab44513583e1711e6b0ef02e4cf15b02-1319127330.eu-central-1.elb.amazonaws.com:8001'
+    url = 'http://a8494c153542511e69b640206bb85836-116705424.eu-central-1.elb.amazonaws.com:8001'
 
     headers = {'Accept': 'application/json',
                'X-Auth-Token': '' + getToken() + ''
