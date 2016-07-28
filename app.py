@@ -1,6 +1,6 @@
 #!flask/bin/python
 
-from flask import Flask, jsonify, json
+from flask import Flask, jsonify, json, request
 from enum import Enum
 import requests, time
 
@@ -23,11 +23,23 @@ def run():
         goAway()
         appState = State.away
         print appState.name
-        return '\n on the way to the horizon'
+        return '\n on the way to the horizon \n\n'
     elif appState == State.away:
         goHome()
         appState = State.home
-        return '\n on the way home'
+        return '\n on the way home \n\n'
+
+@app.route('/orchestrate/api/v1.0/setState', methods=['POST'])
+def setState():
+    global appState
+    if request.args.get('state') == 'home':
+        appState = State.home
+        return '\n state is set to home \n\n'
+    elif request.args.get('state') == 'away':
+        appState = State.away
+        return '\n state is set to away \n\n'
+    else:
+        return '\n wrong parameter \n\n'
 
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():

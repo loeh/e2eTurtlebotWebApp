@@ -1,6 +1,6 @@
 #!flask/bin/python
 
-from flask import Flask, jsonify, json
+from flask import Flask, jsonify, json, request
 from enum import Enum
 import requests, time
 
@@ -23,11 +23,22 @@ def run():
         goAway()
         appState = State.away
         print appState.name
-        return '\n on the way to the horizon'
+        return '\n on the way to the horizon \n\n'
     elif appState == State.away:
         goHome()
         appState = State.home
-        return '\n on the way home'
+        return '\n on the way home \n\n'
+
+@app.route('/orchestrate/api/v1.0/setState', methods=['POST'])
+def setState():
+    if request.args.get('state') == 'home':
+        appState = State.home
+        return '\n state is set to home \n\n'
+    elif request.args.get('state') == 'away':
+        appState = State.away
+        return '\n state is set to away \n\n'
+    else:
+        return '\n wrong parameter \n\n'
 
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
@@ -44,7 +55,7 @@ def not_found(error):
 
 
 def getToken():
-    tokenUrl = 'http://a8494c153542511e69b640206bb85836-116705424.eu-central-1.elb.amazonaws.com:8001/login'
+    tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
 
     headers = {'Accept': 'application/json'}
 
@@ -69,7 +80,7 @@ def goHome():
     
 
 def invoceCommandOnRobot(command):
-    url = 'http://a8494c153542511e69b640206bb85836-116705424.eu-central-1.elb.amazonaws.com:8001'
+    url = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001'
 
     headers = {'Accept': 'application/json',
                'X-Auth-Token': '' + getToken() + ''
