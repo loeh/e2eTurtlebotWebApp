@@ -31,6 +31,7 @@ def run():
 
 @app.route('/orchestrate/api/v1.0/setState', methods=['POST'])
 def setState():
+    global appState
     if request.args.get('state') == 'home':
         appState = State.home
         return '\n state is set to home \n\n'
@@ -68,9 +69,7 @@ def getToken():
     return r.headers['X-Auth-Token']
 
 def goAway():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal.sh')
-    time.sleep(5)
-    invoceCommandOnRobot('/home/turtlebot/launch_amcl.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_moveto_away.sh')
     # publish to a move_base topic

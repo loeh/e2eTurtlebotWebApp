@@ -43,10 +43,6 @@ def setState():
 
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
-    # kill running nodes
-    # start docking nodes 
-    #invoceCommandOnRobot('/home/turtlebot/launch_nodekill.sh')
-    #time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_docking.sh')
     return 'docking now'
 
@@ -69,9 +65,7 @@ def getToken():
     return r.headers['X-Auth-Token']
 
 def goAway():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal.sh')
-    time.sleep(5)
-    invoceCommandOnRobot('/home/turtlebot/launch_amcl.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_moveto_away.sh')
     # publish to a move_base topic
