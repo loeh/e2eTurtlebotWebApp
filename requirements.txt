@@ -1,4 +1,5 @@
 flask
+flask-cors
 cherrypy
 requests
 enum34
