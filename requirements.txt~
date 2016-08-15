@@ -3,4 +3,3 @@ flask-cors
 cherrypy
 requests
 enum34
-pyyaml
