@@ -81,8 +81,8 @@ startup the required nodes on the kubernetes cluster
 @app.route('/orchestrate/api/v1.0/createKubeNodes', methods=['POST'])
 def createKubeNodes():
     # create ROS Master
-    createKubeNode('/demoApp/kubernetes/ros_master/master_svc.json')
-    createKubeNode('/demoApp/kubernetes/ros_master/master_pod.json')
+    createKubeNode(convertYamlToJson('/demoApp/kubernetes/ros_master/master_svc.yml'))
+    createKubeNode(convertYamlToJson('/demoApp/kubernetes/ros_master/master_pod.yml'))
     return 'started ROS Master'
     
 
@@ -102,6 +102,12 @@ standart 404 error handler
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+def convertYamlToJson(ymlFile):
+    with open(ymlFile, 'r') as stream:
+    try:
+        return json.dumps(yaml.load(ymlFile), indent=2)
+    except yaml.YAMLError as exc:
+        print(exc)
 
 def createKubeNode(nodeDescription):
 
@@ -116,7 +122,8 @@ def createKubeNode(nodeDescription):
                'Content-Type': 'application/json'
                }
 
-    r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
+    #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
+    r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
 
 
 def getToken():
