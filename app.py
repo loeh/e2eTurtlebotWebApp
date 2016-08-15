@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
-import requests, time
+import requests, time, os
 
 app = Flask(__name__)
 
@@ -104,7 +104,11 @@ def not_found(error):
 
 
 def createKubeNode(nodeDescription):
-    url = 'https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/default/pods'
+
+    KUBERNETES_SERVICE_HOST = os.environ['KUBERNETES_SERVICE_HOST']
+    KUBERNETES_PORT_443_TCP_PORT = os.environ['KUBERNETES_PORT_443_TCP_PORT']
+    
+    url = 'https://' + KUBERNETES_SERVICE_HOST + ':' + KUBERNETES_PORT_443_TCP_PORT + '/api/v1/namespaces/default/pods'
 
     headers = {'Authorization': 'Bearer $KUBE_TOKEN',
                'Content-Type': 'application/json'
