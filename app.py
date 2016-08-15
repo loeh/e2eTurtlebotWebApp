@@ -83,6 +83,7 @@ def createKubeNodes():
     # create ROS Master
     createKubeNode('/demoApp/kubernetes/ros_master/master_svc.json')
     createKubeNode('/demoApp/kubernetes/ros_master/master_pod.json')
+    return 'started ROS Master'
     
 
 '''

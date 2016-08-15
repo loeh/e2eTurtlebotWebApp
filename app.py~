@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
-import requests, time, yaml
+import requests, time
 
 app = Flask(__name__)
 
@@ -83,6 +83,7 @@ def createKubeNodes():
     # create ROS Master
     createKubeNode('/demoApp/kubernetes/ros_master/master_svc.json')
     createKubeNode('/demoApp/kubernetes/ros_master/master_pod.json')
+    print 'started ROS Master'
     
 
 '''
