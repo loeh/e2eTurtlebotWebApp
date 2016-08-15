@@ -107,10 +107,11 @@ def createKubeNode(nodeDescription):
 
     KUBERNETES_SERVICE_HOST = os.environ['KUBERNETES_SERVICE_HOST']
     KUBERNETES_PORT_443_TCP_PORT = os.environ['KUBERNETES_PORT_443_TCP_PORT']
+    KUBE_TOKEN = os.environ['KUBE_TOKEN']
     
     url = 'https://' + KUBERNETES_SERVICE_HOST + ':' + KUBERNETES_PORT_443_TCP_PORT + '/api/v1/namespaces/default/pods'
 
-    headers = {'Authorization': 'Bearer $KUBE_TOKEN',
+    headers = {'Authorization': 'Bearer ' + KUBE_TOKEN,
                'Content-Type': 'application/json'
                }
 
