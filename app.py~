@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
-import requests, time, os
+import requests, time, os, yml
 
 app = Flask(__name__)
 
@@ -81,8 +81,8 @@ startup the required nodes on the kubernetes cluster
 @app.route('/orchestrate/api/v1.0/createKubeNodes', methods=['POST'])
 def createKubeNodes():
     # create ROS Master
-    createKubeNode(convertYamlToJson('/demoApp/kubernetes/ros_master/master_svc.yml'))
-    createKubeNode(convertYamlToJson('/demoApp/kubernetes/ros_master/master_pod.yml'))
+    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_master/master_svc.yml'))
+    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_master/master_pod.yml'))
     return 'started ROS Master'
     
 
@@ -102,12 +102,16 @@ standart 404 error handler
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-def convertYamlToJson(ymlFile):
-    with open(ymlFile, 'r') as stream:
+
+def convertYmlToJson(ymlFile):
+   with open(ymlFile, 'r') as stream:
         try:
-            return json.dumps(yaml.load(ymlFile), indent=2)
+            jsonString = json.dumps(yaml.load(stream), indent=2)
+            print(jsonString)
+            return jsonString
         except yaml.YAMLError as exc:
             print(exc)
+    
 
 def createKubeNode(nodeDescription):
 
@@ -124,7 +128,6 @@ def createKubeNode(nodeDescription):
 
     #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
     r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
-
 
 def getToken():
     tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
