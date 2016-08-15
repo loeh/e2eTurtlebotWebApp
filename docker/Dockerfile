@@ -11,6 +11,7 @@ RUN apt-get install -y python2.7 python-pip
 
 # clone the webapp
 RUN git clone https://github.com/loeh/e2eTurtlebotWebApp.git /webapp
+RUN git clone https://github.com/loeh/e2eTurtlebotDemo.git /demoApp
 
 # Get pip to download and install requirements:
 RUN pip install -r /webapp/requirements.txt

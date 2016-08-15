@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
-import requests, time
+import requests, time, yaml
 
 app = Flask(__name__)
 
@@ -76,6 +76,16 @@ def startUp():
     return 'starting up...'
 
 '''
+startup the required nodes on the kubernetes cluster
+'''
+@app.route('/orchestrate/api/v1.0/createKubeNodes', methods=['POST'])
+def createKubeNodes():
+    # create ROS Master
+    createKubeNode('/demoApp/kubernetes/ros_master/master_svc.json')
+    createKubeNode('/demoApp/kubernetes/ros_master/master_pod.json')
+    
+
+'''
 returns the robot back to his starting point. 
 '''
 @app.route('/orchestrate/api/v1.0/goBack', methods=['POST'])
@@ -90,6 +100,16 @@ standart 404 error handler
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+def createKubeNode(nodeDescription):
+    url = 'https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/default/pods'
+
+    headers = {'Authorization': 'Bearer $KUBE_TOKEN',
+               'Content-Type': 'application/json'
+               }
+
+    r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers)
 
 
 def getToken():
