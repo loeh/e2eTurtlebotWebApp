@@ -104,10 +104,10 @@ def not_found(error):
 
 def convertYamlToJson(ymlFile):
     with open(ymlFile, 'r') as stream:
-    try:
-        return json.dumps(yaml.load(ymlFile), indent=2)
-    except yaml.YAMLError as exc:
-        print(exc)
+        try:
+            return json.dumps(yaml.load(ymlFile), indent=2)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 def createKubeNode(nodeDescription):
 
