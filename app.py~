@@ -107,7 +107,8 @@ def createKubeNode(nodeDescription):
 
     KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST')
     KUBERNETES_PORT_443_TCP_PORT = os.environ.get('KUBERNETES_PORT_443_TCP_PORT')
-    KUBE_TOKEN = os.environ.get('KUBE_TOKEN')
+    f = open('/var/run/secrets/kubernetes.io/serviceaccount/token')
+    KUBE_TOKEN = f.read()
     
     url = 'https://' + KUBERNETES_SERVICE_HOST + ':' + KUBERNETES_PORT_443_TCP_PORT + '/api/v1/namespaces/default/pods'
 
