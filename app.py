@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
-import requests, time, yaml
+import requests, time
 
 app = Flask(__name__)
 
