@@ -105,9 +105,9 @@ def not_found(error):
 
 def createKubeNode(nodeDescription):
 
-    KUBERNETES_SERVICE_HOST = os.environ['KUBERNETES_SERVICE_HOST']
-    KUBERNETES_PORT_443_TCP_PORT = os.environ['KUBERNETES_PORT_443_TCP_PORT']
-    KUBE_TOKEN = os.environ['KUBE_TOKEN']
+    KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST')
+    KUBERNETES_PORT_443_TCP_PORT = os.environ.get('KUBERNETES_PORT_443_TCP_PORT')
+    KUBE_TOKEN = os.environ.get('KUBE_TOKEN')
     
     url = 'https://' + KUBERNETES_SERVICE_HOST + ':' + KUBERNETES_PORT_443_TCP_PORT + '/api/v1/namespaces/default/pods'
 
@@ -115,7 +115,7 @@ def createKubeNode(nodeDescription):
                'Content-Type': 'application/json'
                }
 
-    r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers)
+    r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
 
 
 def getToken():
