@@ -64,17 +64,27 @@ if the robot is close to his docking station he can be docked
 '''
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
+    invoceCommandOnRobot('/home/turtlebot/stop_minimal_amcl_proc.sh')
+    time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_docking.sh')
+    time.sleep(5)
+    invoceCommandOnRobot('/home/turtlebot/activate_docking.sh')
     return 'docking now'
+
+'''
+if the robot is succefully docked, kill all the docking nodes
+'''
+@app.route('/orchestrate/api/v1.0/docked', methods=['POST'])
+def docked():
+    invoceCommandOnRobot('/home/turtlebot/stop_docking.sh')
+    return 'killed the docking nodes'
 
 '''
 startup the minimal + the amcl nodes on the robot
 '''
 @app.route('/orchestrate/api/v1.0/startUp', methods=['POST'])
 def startUp():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
-    time.sleep(5)
-    invoceCommandOnRobot('/home/turtlebot/launch_rrbridge.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl_proc.sh')
     return 'starting up the robot...'
 
 '''
@@ -110,6 +120,16 @@ standart 404 error handler
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+def goAway():
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl_proc.sh')
+    time.sleep(5)
+    invoceCommandOnRobot('/home/turtlebot/launch_moveto_away.sh')
+    # publish to a move_base topic
+
+def goHome():
+    invoceCommandOnRobot('/home/turtlebot/launch_moveto_home.sh')
 
 
 def convertYmlToJson(ymlFile):
@@ -150,15 +170,6 @@ def getToken():
     r = requests.post(tokenUrl, headers=headers, data=payload)
 
     return r.headers['X-Auth-Token']
-
-def goAway():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
-    time.sleep(5)
-    invoceCommandOnRobot('/home/turtlebot/launch_moveto_away.sh')
-    # publish to a move_base topic
-
-def goHome():
-    invoceCommandOnRobot('/home/turtlebot/launch_moveto_home.sh')
     
 
 def invoceCommandOnRobot(command):
