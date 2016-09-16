@@ -85,8 +85,8 @@ startup the minimal + the amcl nodes on the robot
 '''
 @app.route('/orchestrate/api/v1.0/startUp', methods=['POST'])
 def startUp():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     invoceCommandOnRobot('/home/turtlebot/launch_rrbridge.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     return 'starting up the robot...\n\n'
 
 '''
