@@ -4,6 +4,7 @@ from flask import Flask, jsonify, json, request
 from flask_cors import CORS
 from enum import Enum
 import requests, time, os, yaml
+from helper import *
 
 app = Flask(__name__)
 
@@ -15,9 +16,8 @@ class State(Enum):
 
 appState = State.home
 
-
 '''
-get the current application state 
+get the current application state
 return State
 '''
 @app.route('/orchestrate/api/v1.0/getState', methods=['GET'])
@@ -26,7 +26,7 @@ def getState():
 
 
 '''
-used to push the robot to a certain position and when pushed again, 
+used to push the robot to a certain position and when pushed again,
 return to the starting position
 '''
 @app.route('/orchestrate/api/v1.0/push', methods=['POST'])
@@ -44,7 +44,7 @@ def run():
 
 
 '''
-if the robot fails and gets lost the application state can be set manually. 
+if the robot fails and gets lost the application state can be set manually.
 used only for debugging the application
 '''
 @app.route('/orchestrate/api/v1.0/setState', methods=['POST'])
@@ -63,8 +63,8 @@ def setState():
 if the robot is close to his docking station he can be docked
 '''
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
-def docking():
-    invoceCommandOnRobot('/home/turtlebot/stop_minimal_amcl_proc.sh')
+def dock():
+    invoceCommandOnRobot('/home/turtlebot/stop_minimal_amcl.sh')
     time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_docking.sh')
     time.sleep(5)
@@ -77,6 +77,7 @@ if the robot is succefully docked, kill all the docking nodes
 @app.route('/orchestrate/api/v1.0/docked', methods=['POST'])
 def docked():
     invoceCommandOnRobot('/home/turtlebot/stop_docking.sh')
+    invoceCommandOnRobot('/home/turtlebot/stop_rrbridge.sh')
     return 'killed the docking nodes'
 
 '''
@@ -84,8 +85,9 @@ startup the minimal + the amcl nodes on the robot
 '''
 @app.route('/orchestrate/api/v1.0/startUp', methods=['POST'])
 def startUp():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl_proc.sh')
-    return 'starting up the robot...'
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_rrbridge.sh')
+    return 'starting up the robot...\n\n'
 
 '''
 startup the required nodes on the kubernetes cluster
@@ -103,10 +105,10 @@ def createKubeNodes():
     createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_bridge/ros_bridge_svc_public.yml'))
     createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_bridge/ros_bridge_pod.yml'))
     return 'started required nodes\n\n'
-    
+
 
 '''
-returns the robot back to his starting point. 
+returns the robot back to his starting point.
 '''
 @app.route('/orchestrate/api/v1.0/goBack', methods=['POST'])
 def goBack():
@@ -123,7 +125,7 @@ def not_found(error):
 
 
 def goAway():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl_proc.sh')
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_moveto_away.sh')
     # publish to a move_base topic
@@ -131,63 +133,6 @@ def goAway():
 def goHome():
     invoceCommandOnRobot('/home/turtlebot/launch_moveto_home.sh')
 
-
-def convertYmlToJson(ymlFile):
-   with open(ymlFile, 'r') as stream:
-        try:
-            jsonString = json.dumps(yaml.load(stream), indent=2)
-            print(jsonString)
-            return jsonString
-        except yaml.YAMLError as exc:
-            print(exc)
-    
-
-def createKubeNode(nodeDescription):
-
-    KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST')
-    KUBERNETES_PORT_443_TCP_PORT = os.environ.get('KUBERNETES_PORT_443_TCP_PORT')
-    f = open('/var/run/secrets/kubernetes.io/serviceaccount/token')
-    KUBE_TOKEN = f.read()
-    
-    url = 'https://' + KUBERNETES_SERVICE_HOST + ':' + KUBERNETES_PORT_443_TCP_PORT + '/api/v1/namespaces/default/pods'
-
-    headers = {'Authorization': 'Bearer ' + KUBE_TOKEN,
-               'Content-Type': 'application/json'
-               }
-
-    #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
-    r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
-
-def getToken():
-    tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
-
-    headers = {'Accept': 'application/json'}
-
-    payload  = {'username':'roboreg',
-        'password':'splab',
-        'eauth':'pam'
-                }
-    r = requests.post(tokenUrl, headers=headers, data=payload)
-
-    return r.headers['X-Auth-Token']
-    
-
-def invoceCommandOnRobot(command):
-    url = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001'
-
-    headers = {'Accept': 'application/json',
-               'X-Auth-Token': '' + getToken() + ''
-               }
-
-    payload = {'client':'local',
-               'tgt':'*',
-               'fun':'cmd.run_bg',
-               'arg':[command]
-               }
-
-    r = requests.post(url, headers=headers, data=payload)
-
-    print 'started node'
 
 if __name__ == '__main__':
     app.run(debug=True)

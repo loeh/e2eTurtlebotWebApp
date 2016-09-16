@@ -65,7 +65,9 @@ if the robot is close to his docking station he can be docked
 @app.route('/orchestrate/api/v1.0/dock', methods=['POST'])
 def docking():
     invoceCommandOnRobot('/home/turtlebot/stop_minimal_amcl_proc.sh')
+    time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/launch_docking.sh')
+    time.sleep(5)
     invoceCommandOnRobot('/home/turtlebot/activate_docking.sh')
     return 'docking now'
 
@@ -82,8 +84,8 @@ startup the minimal + the amcl nodes on the robot
 '''
 @app.route('/orchestrate/api/v1.0/startUp', methods=['POST'])
 def startUp():
-    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl_proc.sh')
-    return 'starting up the robot...'
+    invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
+    return 'starting up the robot...\n\n'
 
 '''
 startup the required nodes on the kubernetes cluster
