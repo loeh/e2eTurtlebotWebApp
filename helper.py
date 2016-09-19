@@ -3,6 +3,12 @@
 from flask import Flask, jsonify, json, request
 import requests, time, os, yaml
 
+authToken = None
+
+def setCurrentToken(token):
+    global authToken
+    authToken = token
+
 def convertYmlToJson(ymlFile):
    with open(ymlFile, 'r') as stream:
         try:
@@ -28,7 +34,7 @@ def createKubeNode(nodeDescription):
     #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
     r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
 
-def getToken():
+def createToken():
     tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
 
     headers = {'Accept': 'application/json'}
@@ -43,10 +49,11 @@ def getToken():
 
 
 def invoceCommandOnRobot(command):
+
     url = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001'
 
     headers = {'Accept': 'application/json',
-               'X-Auth-Token': '' + getToken() + ''
+               'X-Auth-Token': '' + authToken + ''
                }
 
     payload = {'client':'local',

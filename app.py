@@ -24,6 +24,22 @@ return State
 def getState():
     return '\n Current state is: ' + appState.name + '\n\n'
 
+'''
+create a new auth token
+'''
+@app.route('/orchestrate/api/v1.0/createToken', methods=['POST'])
+def createAuthToken():
+    authToken = createToken()
+    setCurrentToken(authToken)
+    return '\n new auth token created: ' + authToken + '\n\n'
+
+'''
+view current auth token
+'''
+@app.route('/orchestrate/api/v1.0/getToken', methods=['GET'])
+def getAuthToken():
+    return authToken
+
 
 '''
 used to push the robot to a certain position and when pushed again,
@@ -85,6 +101,7 @@ startup the minimal + the amcl nodes on the robot
 '''
 @app.route('/orchestrate/api/v1.0/startUp', methods=['POST'])
 def startUp():
+    createAuthToken()
     invoceCommandOnRobot('/home/turtlebot/launch_rrbridge.sh')
     time.sleep(1)
     invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
