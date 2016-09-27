@@ -16,6 +16,15 @@ class State(Enum):
 
 appState = State.home
 
+
+'''
+get the endpoint of a kubernetes service
+return description of service
+'''
+@app.route('/orchestrate/api/v1.0/getServiceEndPoint', methods=['GET'])
+def getEndPoint():
+    return getServiceEndPoint('rosbridge-public')
+
 '''
 get the current application state
 return State
