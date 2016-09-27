@@ -48,7 +48,8 @@ def getServiceEndPoint(serviceName):
                }
 
     r = requests.get(url, headers=headers, verify=False)
-    return r
+    jsonData = r.json()
+    return jsonData['status']['loadBalancer']['ingress'][0]['hostname']
 
 def createToken():
     tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
