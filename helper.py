@@ -35,11 +35,13 @@ def createKubeNode(nodeDescription):
     r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
 
 def installNodes():
-    subprocess.call(["helm", "install", "/root/e2eTurtlebot"])
+    subprocess.call(["helm", "install", "/home/tobias/Desktop/e2eTurtlebot"])
 
 def removeNodes():
     releaseName = subprocess.check_output(["helm", "list"])
-    subprocess.call(["helm", "delete", releaseName])
+    releaseNameString = str(releaseName)
+    releaseNameString = releaseNameString.rstrip()
+    subprocess.call(["helm", "delete", releaseNameString])
 
 
 def getServiceEndPoint(serviceName):
