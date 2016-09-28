@@ -119,20 +119,18 @@ def startUp():
 '''
 startup the required nodes on the kubernetes cluster
 '''
-@app.route('/orchestrate/api/v1.0/createKubeNodes', methods=['POST'])
-def createKubeNodes():
-    # create ROS Master
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_master/master_svc.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_master/master_pod.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/rrbridge/bridge_svc.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/rrbridge/bridge_pod.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_posePublisher/ros_posePublisher_svc.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_posePublisher/ros_posePublisher_pod.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_bridge/ros_bridge_svc_headless.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_bridge/ros_bridge_svc_public.yml'))
-    createKubeNode(convertYmlToJson('/demoApp/kubernetes/ros_bridge/ros_bridge_pod.yml'))
+@app.route('/orchestrate/api/v1.0/installNodes', methods=['POST'])
+def installKubeNodes():
+    installNodes()
     return 'started required nodes\n\n'
 
+'''
+delete the nodes on the kubernetes cluster
+'''
+@app.route('/orchestrate/api/v1.0/removeNodes', methods=['POST'])
+def removeKubeNodes():
+    removeNodes()
+    return 'deleted required nodes\n\n'
 
 '''
 returns the robot back to his starting point.

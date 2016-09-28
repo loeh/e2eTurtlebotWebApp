@@ -1,7 +1,7 @@
 #!flask/bin/python
 
 from flask import Flask, jsonify, json, request
-import requests, time, os, yaml
+import requests, time, os, yaml, subprocess, logging
 
 authToken = None
 
@@ -33,6 +33,14 @@ def createKubeNode(nodeDescription):
 
     #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
     r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
+
+def installNodes():
+    subprocess.call(["helm", "install", "/root/e2eTurtlebot"])
+
+def removeNodes():
+    releaseName = subprocess.check_output(["helm", "list"])
+    subprocess.call(["helm", "delete", releaseName])
+
 
 def getServiceEndPoint(serviceName):
 
