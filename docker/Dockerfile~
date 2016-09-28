@@ -28,7 +28,7 @@ RUN export HELM_OS=linux && wget https://github.com/kubernetes/helm/releases/dow
 RUN cd /linux-amd64 && ./helm init --client-only
 
 # Copy Turtlebot chart
-COPY e2eTurtlebot /root/
+COPY e2eTurtlebot /root/e2eTurtlebot/
 
 # Expose ports
 EXPOSE 5000 8080

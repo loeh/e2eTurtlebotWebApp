@@ -5,10 +5,18 @@ import requests, time, os, yaml, subprocess, logging
 
 authToken = None
 
+'''
+setter for a new auth token used in salt
+'''
 def setCurrentToken(token):
     global authToken
     authToken = token
 
+'''
+convert yaml files to json
+@param yaml file
+return jsonString
+'''
 def convertYmlToJson(ymlFile):
    with open(ymlFile, 'r') as stream:
         try:
@@ -18,6 +26,10 @@ def convertYmlToJson(ymlFile):
         except yaml.YAMLError as exc:
             print(exc)
 
+'''
+create a now pod or service in the current kubernetes cluster
+@param json description of the node/service
+'''
 def createKubeNode(nodeDescription):
 
     KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST')
@@ -34,16 +46,26 @@ def createKubeNode(nodeDescription):
     #r = requests.post(url, data=open(nodeDescription, 'rb'), headers=headers, verify=False)
     r = requests.post(url, data=nodeDescription, headers=headers, verify=False)
 
+'''
+install e2eTurtlebot chart using helm
+'''
 def installNodes():
     subprocess.call(["helm", "install", "/root/e2eTurtlebot"])
 
+'''
+remove e2eTurtlebot chart using helm
+'''
 def removeNodes():
     releaseName = subprocess.check_output(["helm", "list"])
     releaseNameString = str(releaseName)
     releaseNameString = releaseNameString.rstrip()
     subprocess.call(["helm", "delete", releaseNameString])
 
-
+'''
+get the domain name of an loadBalancer ingress
+@param serviceName
+return String domain name
+'''
 def getServiceEndPoint(serviceName):
 
     KUBERNETES_SERVICE_HOST = os.environ.get('KUBERNETES_SERVICE_HOST')
@@ -61,6 +83,9 @@ def getServiceEndPoint(serviceName):
     jsonData = r.json()
     return jsonData['status']['loadBalancer']['ingress'][0]['hostname']
 
+'''
+create new Salt Token to authenticate to the saltmaster
+'''
 def createToken():
     tokenUrl = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001/login'
 
@@ -74,7 +99,10 @@ def createToken():
 
     return r.headers['X-Auth-Token']
 
-
+'''
+invoce new command on the robot using salt.
+@param command to execute on the robot
+'''
 def invoceCommandOnRobot(command):
 
     url = 'http://a8ebe290c549111e69b640206bb85836-998418534.eu-central-1.elb.amazonaws.com:8001'

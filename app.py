@@ -16,7 +16,6 @@ class State(Enum):
 
 appState = State.home
 
-
 '''
 get the endpoint of a kubernetes service
 return description of service
