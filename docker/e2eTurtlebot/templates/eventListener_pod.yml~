@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: eventlistener
   labels:
+    name: eventlistener
     # The "heritage" label is used to track which tool deployed a given chart.
     # It is useful for admins who want to see what releases a particular tool
     # is responsible for.
@@ -18,7 +19,7 @@ spec:
   containers:
     - env:
         - name: ROS_HOSTNAME
-          value: mapserver
+          value: eventlistener
         - name: ROS_MASTER_URI
           value: http://master:11311
       name: eventlistener

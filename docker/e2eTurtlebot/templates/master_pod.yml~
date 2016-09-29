@@ -3,6 +3,7 @@ kind: Pod
 metadata:
   name: master
   labels:
+    name: master
     # The "heritage" label is used to track which tool deployed a given chart.
     # It is useful for admins who want to see what releases a particular tool
     # is responsible for.
@@ -16,7 +17,10 @@ metadata:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   containers:
-   -  name: master
+    - env:
+        - name: ROS_HOSTNAME
+          value: master
+      name: master
       image: loeh/rosmaster:latest
       ports:
         - containerPort: 11311
