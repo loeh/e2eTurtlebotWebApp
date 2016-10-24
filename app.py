@@ -111,7 +111,7 @@ startup the minimal + the amcl nodes on the robot
 def startUp():
     createAuthToken()
     invoceCommandOnRobot('/home/turtlebot/launch_rrbridge.sh')
-    time.sleep(1)
+    time.sleep(3)
     invoceCommandOnRobot('/home/turtlebot/launch_minimal_amcl.sh')
     return 'starting up the robot...\n\n'
 
